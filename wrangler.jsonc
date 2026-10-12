@@ -1,0 +1,36 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "secure-webapp-lab",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-01",
+
+  // 演習ファイルの vuln / fixed を抜き出して解説ページ用のソースを作る（演習を編集すると自動で再生成）
+  "build": { "command": "npm run gen", "watch_dir": "src/exercises" },
+
+  // 学習者ごとに 1 つの SQLite 内蔵 Durable Object を割り当てる（＝データが他人と混ざらない）
+  "durable_objects": {
+    "bindings": [{ "name": "LAB", "class_name": "LabDO" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["LabDO"] }],
+
+  // 公開しない（workers.dev / プレビューURL を Access で保護する手順は docs/DEPLOY.md）
+  "workers_dev": true,
+  "preview_urls": false,
+
+  "vars": {
+    // "development" 以外は常に Cloudflare Access の JWT を検証する（fail-closed）
+    "ENVIRONMENT": "production",
+    // 例: https://<team>.cloudflareaccess.com
+    "ACCESS_TEAM_DOMAIN": "",
+    // Access アプリケーションの Application Audience (AUD) タグ
+    "ACCESS_AUD": "",
+    // 任意: カンマ区切りで許可するメールアドレス（Access ポリシーに加えた二重チェック）
+    "ALLOWED_EMAILS": "",
+    // この時間（時間単位）操作がなければ学習データを自動削除する
+    "LAB_TTL_HOURS": "24",
+    // PBKDF2 の反復回数。Workers の上限は 100000。無料プランは CPU 10ms 制限のため控えめにしてある
+    "PBKDF2_ITERATIONS": "10000"
+  },
+
+  "observability": { "enabled": false }
+}

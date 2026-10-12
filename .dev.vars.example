@@ -1,0 +1,5 @@
+# ローカル開発では `npm run dev` が --var ENVIRONMENT:development を付けるので、このファイルは通常不要です。
+# Access 検証を手元で試したいときだけ、.dev.vars にコピーして値を入れてください。
+# ENVIRONMENT=production
+# ACCESS_TEAM_DOMAIN=https://<team>.cloudflareaccess.com
+# ACCESS_AUD=<application audience tag>
